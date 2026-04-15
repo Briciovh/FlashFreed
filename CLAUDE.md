@@ -10,4 +10,4 @@ Run the following steps in order and report any failures before considering the 
 
 1. **Gradle sync** — `./gradlew --quiet dependencies`
 2. **Build** — `./gradlew assembleDebug`
-3. **UI tests** — `./gradlew connectedAndroidTest`
+3. **Unit tests** — `./gradlew test`
