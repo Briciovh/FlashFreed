@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "WebFetch(domain:github.com)",
+      "Bash(curl -s \"https://api.github.com/repos/google/ksp/releases?per_page=10\")",
+      "Bash(curl -s \"https://api.github.com/repos/JetBrains/kotlin/releases?per_page=15\")",
+      "Bash(curl -s \"https://api.github.com/repos/google/ksp/releases/tags/2.3.6\")",
+      "Bash(curl -s \"https://api.github.com/repos/google/ksp/releases/tags/2.3.0\")",
+      "Bash(python3 -c \"import sys,json; r=json.load\\(sys.stdin\\); print\\(r['body'][:1000]\\)\")",
+      "Read(//mnt/c/Users/brici/code/**)",
+      "Bash(./gradlew --quiet dependencies)",
+      "Bash(curl -s \"https://api.github.com/repos/google/dagger/releases?per_page=5\")",
+      "Bash(./gradlew assembleDebug)"
+    ]
+  }
+}
