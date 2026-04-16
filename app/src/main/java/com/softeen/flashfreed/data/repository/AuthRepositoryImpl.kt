@@ -2,8 +2,8 @@ package com.softeen.flashfreed.data.repository
 
 import android.content.Context
 import androidx.credentials.CredentialManager
-import androidx.credentials.GetCredentialRequest
 import androidx.credentials.CustomCredential
+import androidx.credentials.GetCredentialRequest
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.firebase.auth.FirebaseAuth
@@ -49,10 +49,9 @@ class AuthRepositoryImpl @Inject constructor(
                 .addCredentialOption(googleIdOption)
                 .build()
             val result = credentialManager.getCredential(context, request)
-            val googleIdToken = (result.credential as CustomCredential)
-                .data.getString(GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL)
-                ?: throw Exception("Token nulo")
-            val firebaseCredential = GoogleAuthProvider.getCredential(googleIdToken, null)
+            val credential = result.credential as CustomCredential
+            val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
+            val firebaseCredential = GoogleAuthProvider.getCredential(googleIdTokenCredential.idToken, null)
             val authResult = auth.signInWithCredential(firebaseCredential).await()
             Result.success(authResult.user!!)
         } catch (e: Exception) {

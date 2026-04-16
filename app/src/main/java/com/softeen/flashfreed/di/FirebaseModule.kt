@@ -21,15 +21,10 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object FirebaseModule {
 
-    private const val EMULATOR_HOST = "10.0.2.2"
-
     @Provides
     @Singleton
     fun provideFirestore(): FirebaseFirestore {
         val db = Firebase.firestore
-        if (BuildConfig.DEBUG) {
-            db.useEmulator(EMULATOR_HOST, 8080)
-        }
         return db
     }
 
@@ -37,9 +32,6 @@ object FirebaseModule {
     @Singleton
     fun provideAuth(): FirebaseAuth {
         val auth = Firebase.auth
-        if (BuildConfig.DEBUG) {
-            auth.useEmulator(EMULATOR_HOST, 9099)
-        }
         return auth
     }
 
@@ -47,9 +39,6 @@ object FirebaseModule {
     @Singleton
     fun provideStorage(): FirebaseStorage {
         val storage = Firebase.storage
-        if (BuildConfig.DEBUG) {
-            storage.useEmulator(EMULATOR_HOST, 9199)
-        }
         return storage
     }
 
