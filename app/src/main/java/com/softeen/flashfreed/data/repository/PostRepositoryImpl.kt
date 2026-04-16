@@ -4,6 +4,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.snapshots
+import com.softeen.flashfreed.data.model.Like
 import com.softeen.flashfreed.data.model.Post
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
@@ -52,4 +53,41 @@ class PostRepositoryImpl @Inject constructor(
                     it.toObject(Post::class.java)
                 }
             }
+
+    override suspend fun toggleLike(
+        postId: String,
+        uid: String
+    ): Result<Unit> = try {
+        val postRef = postsCollection.document(postId)
+        val likeRef = postRef.collection("likes").document(uid)
+
+        firestore.runTransaction { transaction ->
+            val likeSnapshot = transaction.get(likeRef)
+            val postSnapshot = transaction.get(postRef)
+            val currentLikes = postSnapshot.getLong("likesCount") ?: 0L
+
+            if (likeSnapshot.exists()) {
+                // Ya dio like → quitar
+                transaction.delete(likeRef)
+                transaction.update(
+                    postRef, "likesCount",
+                    maxOf(0L, currentLikes - 1)
+                )
+            } else {
+                // No ha dado like → agregar
+                transaction.set(likeRef, Like(uid = uid))
+                transaction.update(postRef, "likesCount", currentLikes + 1)
+            }
+        }.await()
+        Result.success(Unit)
+    } catch (e: Exception) {
+        Result.failure(e)
+    }
+
+    override fun isLikedByUser(postId: String, uid: String): Flow<Boolean> =
+        postsCollection.document(postId)
+            .collection("likes")
+            .document(uid)
+            .snapshots()
+            .map { it.exists() }
 }

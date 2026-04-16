@@ -52,9 +52,15 @@ fun FeedScreen(
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 items(posts, key = { it.id }) { post ->
+                    val isLiked by viewModel
+                        .isLikedByUser(post.id)
+                        .collectAsStateWithLifecycle(initialValue = false)
+
                     PostCard(
                         post = post,
                         currentUid = currentUid,
+                        isLiked = isLiked,
+                        onLikeClick = { viewModel.toggleLike(it) },
                         onDeleteClick = { viewModel.deletePost(it) }
                     )
                 }
