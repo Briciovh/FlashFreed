@@ -35,4 +35,10 @@ class UserRepositoryImpl @Inject constructor(
         usersCollection.document(uid)
             .snapshots()
             .map { it.toObject(UserProfile::class.java) }
+
+    override suspend fun saveFcmToken(uid: String, token: String) {
+        usersCollection.document(uid)
+            .update("fcmToken", token)
+            .await()
+    }
 }

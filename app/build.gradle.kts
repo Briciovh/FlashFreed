@@ -71,6 +71,7 @@ dependencies {
     implementation(libs.firebase.auth)
     implementation(libs.firebase.storage)
     implementation(libs.firebase.analytics)
+    implementation(libs.firebase.messaging)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.androidx.credentials)

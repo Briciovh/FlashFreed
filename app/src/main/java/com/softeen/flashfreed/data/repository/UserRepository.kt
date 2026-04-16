@@ -7,4 +7,5 @@ import kotlinx.coroutines.flow.Flow
 interface UserRepository {
     suspend fun createOrUpdateProfile(user: FirebaseUser)
     fun getProfile(uid: String): Flow<UserProfile?>
+    suspend fun saveFcmToken(uid: String, token: String)
 }
