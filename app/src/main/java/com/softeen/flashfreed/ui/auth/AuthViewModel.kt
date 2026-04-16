@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.softeen.flashfreed.data.repository.AuthRepository
+import com.softeen.flashfreed.data.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,7 +13,8 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    private val userRepository: UserRepository
 ) : ViewModel() {
 
     val currentUser = authRepository.currentUser
@@ -24,8 +26,13 @@ class AuthViewModel @Inject constructor(
         viewModelScope.launch {
             _authState.emit(AuthState.Loading)
             authRepository.signInWithGoogle(context)
-                .onSuccess { _authState.emit(AuthState.Success) }
-                .onFailure { _authState.emit(AuthState.Error(it.message)) }
+                .onSuccess { user ->
+                    userRepository.createOrUpdateProfile(user)
+                    _authState.emit(AuthState.Success)
+                }
+                .onFailure {
+                    _authState.emit(AuthState.Error(it.message))
+                }
         }
     }
 

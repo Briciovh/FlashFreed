@@ -36,7 +36,10 @@ fun LoginScreen(
 
     LoginScreenContent(
         authState = authState,
-        onSignInClick = { viewModel.signInWithGoogle(context) }
+        onSignInClick = {
+            viewModel.signInWithGoogle(context)
+            onLoginSuccess()
+        }
     )
 }
 
