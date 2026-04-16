@@ -14,7 +14,9 @@
       "Bash(./gradlew assembleDebug)",
       "Bash(curl -s \"https://dl.google.com/dl/android/maven2/com/google/firebase/firebase-crashlytics-gradle/maven-metadata.xml\")",
       "Bash(./gradlew connectedAndroidTest)",
-      "Bash(./gradlew test *)"
+      "Bash(./gradlew test *)",
+      "Bash(echo \"exit: $?\")",
+      "Bash(./gradlew signingReport)"
     ]
   }
 }

@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.credentials.CredentialManager
 import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
-import com.google.android.libraries.identity.googleid.GetGoogleIdOption
+import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -41,12 +41,11 @@ class AuthRepositoryImpl @Inject constructor(
     override suspend fun signInWithGoogle(context: Context): Result<FirebaseUser> {
         return try {
             val credentialManager = CredentialManager.create(context)
-            val googleIdOption = GetGoogleIdOption.Builder()
-                .setFilterByAuthorizedAccounts(false)
-                .setServerClientId(BuildConfig.GOOGLE_WEB_CLIENT_ID)
+            val signInWithGoogleOption = GetSignInWithGoogleOption
+                .Builder(BuildConfig.GOOGLE_WEB_CLIENT_ID)
                 .build()
             val request = GetCredentialRequest.Builder()
-                .addCredentialOption(googleIdOption)
+                .addCredentialOption(signInWithGoogleOption)
                 .build()
             val result = credentialManager.getCredential(context, request)
             val credential = result.credential as CustomCredential
