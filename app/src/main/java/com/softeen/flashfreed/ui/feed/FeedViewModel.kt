@@ -2,6 +2,7 @@ package com.softeen.flashfreed.ui.feed
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.softeen.flashfreed.data.analytics.AnalyticsHelper
 import com.softeen.flashfreed.data.model.Post
 import com.softeen.flashfreed.data.repository.AuthRepository
 import com.softeen.flashfreed.data.repository.PostRepository
@@ -17,7 +18,8 @@ import kotlinx.coroutines.launch
 @HiltViewModel
 class FeedViewModel @Inject constructor(
     private val postRepository: PostRepository,
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    private val analyticsHelper: AnalyticsHelper
 ) : ViewModel() {
 
     val posts: StateFlow<List<Post>> =
@@ -35,6 +37,7 @@ class FeedViewModel @Inject constructor(
         val uid = currentUid ?: return
         viewModelScope.launch {
             postRepository.toggleLike(postId, uid)
+            analyticsHelper.logLikeToggled(true)
         }
     }
 

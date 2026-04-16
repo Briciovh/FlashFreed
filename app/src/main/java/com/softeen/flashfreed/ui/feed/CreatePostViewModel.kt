@@ -2,6 +2,7 @@ package com.softeen.flashfreed.ui.feed
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.softeen.flashfreed.data.analytics.AnalyticsHelper
 import com.softeen.flashfreed.data.repository.AuthRepository
 import com.softeen.flashfreed.data.repository.PostRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -13,7 +14,8 @@ import kotlinx.coroutines.launch
 @HiltViewModel
 class CreatePostViewModel @Inject constructor(
     private val postRepository: PostRepository,
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    private val analyticsHelper: AnalyticsHelper
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<CreatePostState>(CreatePostState.Idle)
@@ -25,7 +27,9 @@ class CreatePostViewModel @Inject constructor(
         viewModelScope.launch {
             _state.emit(CreatePostState.Loading)
             postRepository.createPost(content, user)
-                .onSuccess { _state.emit(CreatePostState.Success) }
+                .onSuccess {
+                    analyticsHelper.logPostCreated(hasImage = false)
+                    _state.emit(CreatePostState.Success) }
                 .onFailure { _state.emit(CreatePostState.Error(it.message)) }
         }
     }

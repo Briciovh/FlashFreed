@@ -3,6 +3,7 @@ package com.softeen.flashfreed.ui.auth
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.softeen.flashfreed.data.analytics.AnalyticsHelper
 import com.softeen.flashfreed.data.repository.AuthRepository
 import com.softeen.flashfreed.data.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -14,7 +15,8 @@ import kotlinx.coroutines.launch
 @HiltViewModel
 class AuthViewModel @Inject constructor(
     private val authRepository: AuthRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val analyticsHelper: AnalyticsHelper
 ) : ViewModel() {
 
     val currentUser = authRepository.currentUser
@@ -28,7 +30,10 @@ class AuthViewModel @Inject constructor(
             authRepository.signInWithGoogle(context)
                 .onSuccess { user ->
                     userRepository.createOrUpdateProfile(user)
+                    analyticsHelper.logLogin()
+                    analyticsHelper.setUserProperty(user.uid)
                     _authState.emit(AuthState.Success)
+
                 }
                 .onFailure {
                     _authState.emit(AuthState.Error(it.message))

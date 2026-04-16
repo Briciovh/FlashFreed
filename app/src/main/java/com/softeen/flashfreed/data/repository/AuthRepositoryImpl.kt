@@ -10,6 +10,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.softeen.flashfreed.BuildConfig
+import com.softeen.flashfreed.data.analytics.CrashlyticsHelper
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import kotlinx.coroutines.CoroutineScope
@@ -25,7 +26,8 @@ import kotlinx.coroutines.tasks.await
 @Singleton
 class AuthRepositoryImpl @Inject constructor(
     private val auth: FirebaseAuth,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val crashlyticsHelper: CrashlyticsHelper
 ) : AuthRepository {
 
     override val currentUser: StateFlow<FirebaseUser?> =
@@ -57,6 +59,7 @@ class AuthRepositoryImpl @Inject constructor(
             userRepository.createOrUpdateProfile(user)
             Result.success(user)
         } catch (e: Exception) {
+            crashlyticsHelper.logError("Error al iniciar sesión", e)
             Result.failure(e)
         }
     }
