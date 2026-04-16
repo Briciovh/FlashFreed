@@ -13,7 +13,8 @@
       "Bash(curl -s \"https://api.github.com/repos/google/dagger/releases?per_page=5\")",
       "Bash(./gradlew assembleDebug)",
       "Bash(curl -s \"https://dl.google.com/dl/android/maven2/com/google/firebase/firebase-crashlytics-gradle/maven-metadata.xml\")",
-      "Bash(./gradlew connectedAndroidTest)"
+      "Bash(./gradlew connectedAndroidTest)",
+      "Bash(./gradlew test *)"
     ]
   }
 }

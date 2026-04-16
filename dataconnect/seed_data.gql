@@ -1,0 +1,108 @@
+mutation SeedData @transaction @auth(level: PUBLIC, insecureReason: "This is a seed data mutation and is safe to expose to the public.") {
+  user_insertMany(data: [
+    {
+      id: "b2d2f7a9-0e8c-4a3b-9c3f-0e8c4a3b9c3f",
+      displayName: "Alice Smith",
+      createdAt: "2023-01-01T10:00:00Z",
+      email: "alice.smith@example.com",
+      photoUrl: "https://example.com/alice.jpg"
+    },
+    {
+      id: "a1c1e6f4-1d2a-4c5b-8e9f-1d2a4c5b8e9f",
+      displayName: "Bob Johnson",
+      createdAt: "2023-01-02T11:00:00Z",
+      email: "bob.johnson@example.com",
+      photoUrl: "https://example.com/bob.jpg"
+    }
+  ])
+  movie_insertMany(data: [
+    {
+      id: "c4d4e8b1-1e9d-4f2a-8b0c-1e9d4f2a8b0c",
+      title: "The Great Adventure",
+      year: 2020,
+      createdAt: "2023-01-03T12:00:00Z",
+      summary: "A thrilling adventure movie.",
+      genres: ["Adventure", "Action"],
+      runtimeMinutes: 120
+    },
+    {
+      id: "e5f5a9c2-2f0e-4d1b-9c3d-2f0e4d1b9c3d",
+      title: "Mystery in the Mansion",
+      year: 2021,
+      createdAt: "2023-01-04T13:00:00Z",
+      summary: "A classic whodunit.",
+      genres: ["Mystery", "Thriller"],
+      runtimeMinutes: 95
+    }
+  ])
+  watch_insertMany(data: [
+    {
+      id: "f6a6b0d3-3a1f-4e2c-8d4e-3a1f4e2c8d4e",
+      userId: "b2d2f7a9-0e8c-4a3b-9c3f-0e8c4a3b9c3f",
+      movieId: "c4d4e8b1-1e9d-4f2a-8b0c-1e9d4f2a8b0c",
+      watchDate: "2023-01-05",
+      createdAt: "2023-01-05T14:00:00Z",
+      location: "Home"
+    },
+    {
+      id: "g7b7c1e4-4b2e-4f3d-9e5f-4b2e4f3d9e5f",
+      userId: "a1c1e6f4-1d2a-4c5b-8e9f-1d2a4c5b8e9f",
+      movieId: "e5f5a9c2-2f0e-4d1b-9c3d-2f0e4d1b9c3d",
+      watchDate: "2023-01-06",
+      createdAt: "2023-01-06T15:00:00Z",
+      location: "Cinema"
+    }
+  ])
+  review_insertMany(data: [
+    {
+      id: "h8c8d2f5-5c3f-4a4e-9f6a-5c3f4a4e9f6a",
+      userId: "b2d2f7a9-0e8c-4a3b-9c3f-0e8c4a3b9c3f",
+      movieId: "c4d4e8b1-1e9d-4f2a-8b0c-1e9d4f2a8b0c",
+      watchId: "f6a6b0d3-3a1f-4e2c-8d4e-3a1f4e2c8d4e",
+      rating: 5,
+      isPublic: true,
+      createdAt: "2023-01-05T16:00:00Z",
+      updatedAt: "2023-01-05T16:00:00Z",
+      reviewText: "Absolutely loved this movie! Great plot and action."
+    },
+    {
+      id: "i9d9e3g6-6d4a-4b5f-a07b-6d4a4b5fa07b",
+      userId: "a1c1e6f4-1d2a-4c5b-8e9f-1d2a4c5b8e9f",
+      movieId: "e5f5a9c2-2f0e-4d1b-9c3d-2f0e4d1b9c3d",
+      watchId: "g7b7c1e4-4b2e-4f3d-9e5f-4b2e4f3d9e5f",
+      rating: 4,
+      isPublic: false,
+      createdAt: "2023-01-06T17:00:00Z",
+      updatedAt: "2023-01-06T17:00:00Z",
+      reviewText: "A good mystery, but a bit slow-paced at times."
+    }
+  ])
+  movieList_insertMany(data: [
+    {
+      id: "j0e0f4h7-7e5b-4c6g-b18c-7e5b4c6gb18c",
+      userId: "b2d2f7a9-0e8c-4a3b-9c3f-0e8c4a3b9c3f",
+      name: "My Top Action Movies",
+      isPublic: true,
+      createdAt: "2023-01-07T18:00:00Z",
+      updatedAt: "2023-01-07T18:00:00Z",
+      description: "My favorite action films of all time."
+    },
+    {
+      id: "k1f1g5i8-8f6c-4d7h-c29d-8f6c4d7hc29d",
+      userId: "a1c1e6f4-1d2a-4c5b-8e9f-1d2a4c5b8e9f",
+      name: "Cozy Mystery Nights",
+      isPublic: false,
+      createdAt: "2023-01-08T19:00:00Z",
+      updatedAt: "2023-01-08T19:00:00Z",
+      description: "Perfect movies for a quiet mystery night."
+    }
+  ])
+  movieListEntry_insertMany(data: [
+    {
+      movieListId: "j0e0f4h7-7e5b-4c6g-b18c-7e5b4c6gb18c",
+      movieId: "c4d4e8b1-1e9d-4f2a-8b0c-1e9d4f2a8b0c",
+      position: 1,
+      note: "First on my action list!"
+    }
+  ])
+}
