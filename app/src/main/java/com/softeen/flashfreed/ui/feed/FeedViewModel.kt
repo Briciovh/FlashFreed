@@ -7,8 +7,10 @@ import com.softeen.flashfreed.data.repository.AuthRepository
 import com.softeen.flashfreed.data.repository.PostRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -28,6 +30,18 @@ class FeedViewModel @Inject constructor(
 
     val currentUid: String?
         get() = authRepository.currentUser.value?.uid
+
+    fun toggleLike(postId: String) {
+        val uid = currentUid ?: return
+        viewModelScope.launch {
+            postRepository.toggleLike(postId, uid)
+        }
+    }
+
+    fun isLikedByUser(postId: String): Flow<Boolean> {
+        val uid = currentUid ?: return flowOf(false)
+        return postRepository.isLikedByUser(postId, uid)
+    }
 
     fun deletePost(postId: String) {
         viewModelScope.launch {
