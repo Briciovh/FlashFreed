@@ -24,7 +24,8 @@ import kotlinx.coroutines.tasks.await
 
 @Singleton
 class AuthRepositoryImpl @Inject constructor(
-    private val auth: FirebaseAuth
+    private val auth: FirebaseAuth,
+    private val userRepository: UserRepository
 ) : AuthRepository {
 
     override val currentUser: StateFlow<FirebaseUser?> =
@@ -52,7 +53,9 @@ class AuthRepositoryImpl @Inject constructor(
             val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
             val firebaseCredential = GoogleAuthProvider.getCredential(googleIdTokenCredential.idToken, null)
             val authResult = auth.signInWithCredential(firebaseCredential).await()
-            Result.success(authResult.user!!)
+            val user = authResult.user!!
+            userRepository.createOrUpdateProfile(user)
+            Result.success(user)
         } catch (e: Exception) {
             Result.failure(e)
         }

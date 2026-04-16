@@ -2,6 +2,8 @@ package com.softeen.flashfreed.di
 
 import com.softeen.flashfreed.data.repository.AuthRepository
 import com.softeen.flashfreed.data.repository.AuthRepositoryImpl
+import com.softeen.flashfreed.data.repository.PostRepository
+import com.softeen.flashfreed.data.repository.PostRepositoryImpl
 import com.softeen.flashfreed.data.repository.UserRepository
 import com.softeen.flashfreed.data.repository.UserRepositoryImpl
 import dagger.Binds
@@ -24,4 +26,10 @@ abstract class RepositoryModule {
     abstract fun bindUserRepository(
         impl: UserRepositoryImpl
     ): UserRepository
+
+    @Binds @Singleton
+    abstract fun bindPostRepository(
+        impl: PostRepositoryImpl
+    ): PostRepository
+
 }
