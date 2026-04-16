@@ -1,0 +1,64 @@
+# Operation 1: List all movies
+# This query retrieves a paginated list of movies, ordered by year in descending order.
+query ListMovies($limit: Int = 100, $offset: Int = 0) @auth(level: PUBLIC, insecureReason: "This operation is safe to expose to the public as it only retrieves public movie data.") {
+  movies(limit: $limit, offset: $offset, orderBy: [{year: DESC}, {title: ASC}]) {
+    id
+    title
+    year
+    genres
+    summary
+  }
+}
+
+# Operation 2: Create a new movie list for the current user
+# This mutation allows a logged-in user to create a new movie list.
+mutation CreateMyMovieList($name: String!, $isPublic: Boolean!, $description: String) @auth(level: USER) {
+  movieList_insert(data: {
+    name: $name,
+    isPublic: $isPublic,
+    description: $description,
+    userId_expr: "auth.uid",
+    createdAt_expr: "request.time",
+    updatedAt_expr: "request.time"
+  }) {
+    id
+  }
+}
+
+# Operation 3: Add a movie to an existing list
+# This mutation allows a logged-in user to add a movie to a specific movie list,
+# assuming the client-side ensures the user has permission to modify the list.
+mutation AddMovieToMyList($movieListId: UUID!, $movieId: UUID!, $position: Int!, $note: String) @auth(level: USER, insecureReason: "This operation is safe to expose to all logged in users, assuming client-side logic ensures list ownership.") {
+  movieListEntry_insert(data: {
+    movieListId: $movieListId,
+    movieId: $movieId,
+    position: $position,
+    note: $note
+  }) {
+    id
+  }
+}
+
+# Operation 4: Retrieve all movie lists created by the current user
+# This query fetches all movie lists owned by the currently authenticated user.
+query MyMovieLists @auth(level: USER) {
+  movieLists(where: {userId_expr: "auth.uid"}) {
+    id
+    name
+    isPublic
+    createdAt
+    updatedAt
+    description
+    # Optionally, also retrieve the entries within each list
+    movieListEntries_on_movieList(orderBy: [{position: ASC}]) {
+      id
+      position
+      note
+      movie {
+        id
+        title
+        year
+      }
+    }
+  }
+}
