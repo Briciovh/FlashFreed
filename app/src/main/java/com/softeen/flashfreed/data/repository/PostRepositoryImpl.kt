@@ -4,6 +4,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.snapshots
+import com.softeen.flashfreed.data.analytics.CrashlyticsHelper
 import com.softeen.flashfreed.data.model.Like
 import com.softeen.flashfreed.data.model.Post
 import jakarta.inject.Inject
@@ -14,7 +15,8 @@ import kotlinx.coroutines.tasks.await
 
 @Singleton
 class PostRepositoryImpl @Inject constructor(
-    private val firestore: FirebaseFirestore
+    private val firestore: FirebaseFirestore,
+    private val crashlyticsHelper: CrashlyticsHelper
 ) : PostRepository {
 
     private val postsCollection = firestore.collection("posts")
@@ -34,6 +36,7 @@ class PostRepositoryImpl @Inject constructor(
         docRef.set(post).await()
         Result.success(Unit)
     } catch (e: Exception) {
+        crashlyticsHelper.logError("Error al crear post", e)
         Result.failure(e)
     }
 
@@ -41,6 +44,7 @@ class PostRepositoryImpl @Inject constructor(
         postsCollection.document(postId).delete().await()
         Result.success(Unit)
     } catch (e: Exception) {
+        crashlyticsHelper.logError("Error al borrar post", e)
         Result.failure(e)
     }
 
@@ -81,6 +85,7 @@ class PostRepositoryImpl @Inject constructor(
         }.await()
         Result.success(Unit)
     } catch (e: Exception) {
+        crashlyticsHelper.logError("Error al registrar like", e)
         Result.failure(e)
     }
 
