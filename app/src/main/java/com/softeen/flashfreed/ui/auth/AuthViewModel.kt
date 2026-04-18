@@ -3,11 +3,14 @@ package com.softeen.flashfreed.ui.auth
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.messaging.FirebaseMessaging
 import com.softeen.flashfreed.data.analytics.AnalyticsHelper
 import com.softeen.flashfreed.data.repository.AuthRepository
 import com.softeen.flashfreed.data.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -30,6 +33,11 @@ class AuthViewModel @Inject constructor(
             authRepository.signInWithGoogle(context)
                 .onSuccess { user ->
                     userRepository.createOrUpdateProfile(user)
+                    FirebaseMessaging.getInstance().token.addOnSuccessListener { token ->
+                        CoroutineScope(Dispatchers.IO).launch {
+                            userRepository.saveFcmToken(user.uid, token)
+                        }
+                    }
                     analyticsHelper.logLogin()
                     analyticsHelper.setUserProperty(user.uid)
                     _authState.emit(AuthState.Success)
